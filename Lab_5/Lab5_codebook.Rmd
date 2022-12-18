@@ -1,0 +1,34 @@
+---
+title: "Lab_5_codebook_Hetalo"
+output: html_document
+date: "2022-12-12"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Lab 5 UCL ML dataset cleaning notebook
+
+Data saved in the ```data_ucl_dup``` dataset
+### Step1. remove duplicate columns
+```
+data_ucl <- data_ucl_dup[, !duplicated(colnames(data_ucl_dup))]
+```
+
+### Step 2. Select data for mean and std values only, check dimensions
+```
+selective_data <- select(all_data, matches("mean\\(\\)|std\\(\\)|subject|activity"))
+dim(selective_data)
+```
+### Step 3. Rename activities with descriptive names
+```
+descriptive <- within(selective_data, activity <- factor(activity, labels = activity_labels[,2]))
+```
+### Step 4. Aggregate mean values for activities and subjects
+```
+descriptive_name <- aggregate(x = descr[, -c(67,68)], 
+                        by = list(descr[,'subject'], descr[, 'activity']),
+                        FUN = mean)
+```
+
